@@ -75,10 +75,12 @@ Basketball Stats API/
 > **Status:** Phase 1 Path A **complete** + lint-clean + CI verda. 17/22 tasks fets. Repo públic https://github.com/rogerllinares/basketball-stats-api.
 > **Next:** Path B (T19 Neon + T20 Koyeb + T22-finalpush live URL). Bloquejat només per creació de comptes Roger.
 
-**Dependabot PRs oberts (status 2026-05-19 16:00):**
-- PR#1 python 3.12→3.14-slim — ❌ FAIL (major Docker bump, no automerge)
+**Dependabot PRs (status 2026-05-19 16:15 — post-fix):**
+- PR#1 python 3.12→3.14-slim — 🟡 OPEN, decisió Roger (3.12 era pin intencional; valorar bump major)
 - PR#2 actions/checkout v5→v6 — ✅ MERGED `60f4ad3`
-- PR#3 pytest-env 1.2→1.6 — ❌ FAIL (investigar)
-- PR#4 pydantic-settings 2.13→2.14.1 — ❌ FAIL (investigar)
+- PR#3 pytest-env 1.2→1.6 — ✅ MERGED `1aa229d` (uv.lock regenerat manualment)
+- PR#4 pydantic-settings 2.13→2.14.1 — ✅ MERGED `feff2d6` (uv.lock regenerat manualment)
+
+**Coneguda flaw dependabot+uv:** dependabot només toca `pyproject.toml`, no `uv.lock` → `uv sync --locked` falla a CI. Workaround manual: checkout branca dependabot + `uv lock` + push. Durable fix pendent: GHA que auto-regenera lockfile en PRs `dependabot/pip/*`.
 
 Estat dinàmic a `TODO.md` raíz §Basketball Stats API i handoff `00 Notes/handoffs/basketball-stats-api.md`.
