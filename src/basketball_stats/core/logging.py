@@ -1,8 +1,8 @@
 """structlog config with tty-detected JSON / console renderer.
 
-D-19: JSON for the Koyeb log aggregator (parseable); :class:`ConsoleRenderer` for humans
-in dev. Detection: when ``ENV=prod`` or stdout is not a TTY, emit JSON. ``cache_logger_on_first_use=True``
-freezes the processor chain after first use for perf.
+D-19: JSON for the Koyeb log aggregator (parseable); :class:`ConsoleRenderer` for
+humans in dev. Detection: when ``ENV=prod`` or stdout is not a TTY, emit JSON.
+``cache_logger_on_first_use=True`` freezes the processor chain after first use for perf.
 """
 
 import logging
@@ -34,7 +34,9 @@ def configure_logging(env: str = "dev", level: str = "INFO") -> None:
 
     use_json = env.lower() == "prod" or not sys.stdout.isatty()
     renderer: structlog.types.Processor = (
-        structlog.processors.JSONRenderer() if use_json else structlog.dev.ConsoleRenderer(colors=True)
+        structlog.processors.JSONRenderer()
+        if use_json
+        else structlog.dev.ConsoleRenderer(colors=True)
     )
 
     structlog.configure(

@@ -1,1 +1,1 @@
-"""SQLAlchemy 2.0 Declarative models — entities land in Phase 2 (Team, Player, Game, BoxScore, League, Coach)."""
+"""SQLAlchemy 2.0 Declarative models — entities in P2 (Team, Player, Game, BoxScore)."""

@@ -6,6 +6,8 @@ contract Koyeb's HTTP health check reads (auto-restarts after 5 consecutive fail
 the body is for humans (D-10).
 """
 
+from typing import Annotated
+
 import structlog
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -17,9 +19,11 @@ from basketball_stats.api.v1.deps import get_db
 router = APIRouter(tags=["health"])
 log = structlog.get_logger(__name__)
 
+DbSession = Annotated[AsyncSession, Depends(get_db)]
+
 
 @router.get("/healthz")
-async def healthz(session: AsyncSession = Depends(get_db)) -> JSONResponse:
+async def healthz(session: DbSession) -> JSONResponse:
     """Probe DB with ``SELECT 1``; return 200 or 503."""
     try:
         await session.execute(text("SELECT 1"))

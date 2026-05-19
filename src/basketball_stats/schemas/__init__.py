@@ -1,1 +1,1 @@
-"""Pydantic v2 schemas — Create/Read/Update per entity, with json_schema_extra examples (P2)."""
+"""Pydantic v2 schemas — Create/Read/Update with json_schema_extra examples (P2)."""

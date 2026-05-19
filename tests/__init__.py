@@ -1,1 +1,1 @@
-"""Test suite — split unit/ + integration/ from P1 (D-05). testcontainers Postgres real DB (D-16)."""
+"""Test suite — split unit/ + integration/ from P1 (D-05). Real Postgres (D-16)."""
