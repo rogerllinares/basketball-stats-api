@@ -1,0 +1,48 @@
+name: Chore / Infra / CI
+description: Maintenance, refactor, deploy step, CI tweak — no new feature
+title: "[chore] "
+labels: ["chore"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: Single paragraph. What needs doing.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why now
+      description: What it unblocks or prevents.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Done when
+      description: Concrete verification — command output, file existing, CI step passing.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - chore (refactor / cleanup)
+        - ci (workflows, actions)
+        - infra (deploy, hosting, secrets)
+        - documentation
+        - security
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P1
+        - P2
+        - P3
+      default: 1
+    validations:
+      required: true

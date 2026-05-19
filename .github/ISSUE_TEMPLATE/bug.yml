@@ -1,0 +1,45 @@
+name: Bug
+description: Something that should work doesn't
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: One paragraph. What did you do, what did you see, what did you expect.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduce
+      description: Minimal steps or command. If CI failure, link the run.
+      placeholder: |
+        1. `uv run pytest tests/integration/test_x.py::test_y`
+        2. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Python version, OS, branch, commit SHA.
+      placeholder: Python 3.12, Windows 11, branch master, commit abc1234
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stack trace
+      description: Paste the relevant lines only. Wrap in ``` for formatting.
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 — drop everything
+        - P1 — high
+        - P2 — medium
+        - P3 — low
+      default: 2
+    validations:
+      required: true

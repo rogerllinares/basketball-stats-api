@@ -26,6 +26,17 @@ REST API FastAPI + Postgres pur (Neon) per al tracking de stats de bàsquet amat
 
 - **GSD workflow obligatori per fases:** `/gsd-discuss-phase N` → `/gsd-plan-phase N` → `/gsd-execute-phase N` → `/gsd-verify-work N`. Saltar només per fixes trivials d'≤2 archius.
 
+- **🎯 GitHub Issues workflow OBLIGATORI (portfolio signal):** aquest repo és públic i serveix per demostrar que entenc i utilitzo GitHub com un dev professional. Cap excepció.
+  - **Tota unitat de treball significativa = Issue primer.** Bug, feature, task d'una fase, refactor, ADR, deploy step. Crear amb `gh issue create` abans de tocar codi.
+  - **Labels obligatoris** a cada issue: tipus (`bug`, `enhancement`, `documentation`, `chore`, `ci`, `infra`, `security`), prioritat (`P0`/`P1`/`P2`/`P3`), fase (`phase/1-foundation`, `phase/2-...`). Crear labels que faltin amb `gh label create`.
+  - **Milestones per fases GSD**: 1 milestone per fase del PLAN. Tots els issues de la fase assignats al milestone. Tancar milestone quan `/gsd-verify-work` passa.
+  - **Branch naming derivat de l'issue**: `<tipus>/<N>-<slug-curt>` (ex: `feat/42-add-team-endpoint`, `fix/57-asyncpg-pool-leak`).
+  - **PRs sempre tanquen l'issue**: cos del PR amb `Closes #N` (o `Fixes #N` per bugs). Cap PR sense issue associat — si trobes que no tens issue, crea'l abans del PR.
+  - **Commits referencien issue** quan aplica: `<tipus>(scope): missatge (#N)`. No obligatori a cada commit dins d'un PR, però sí al merge commit.
+  - **Templates a `.github/`**: ISSUE_TEMPLATE/bug.yml, ISSUE_TEMPLATE/feature.yml, PULL_REQUEST_TEMPLATE.md. Si no existeixen → crear-los abans del següent issue.
+  - **Dependabot PRs**: també tenen issue només si la decisió no és trivial (ex: bump major Python 3.12→3.14 → issue de discussió; patch automergeable → no cal).
+  - Raó: un recruiter mirant el meu GitHub ha de veure issues amb labels, milestones, PRs que tanquen issues, branch protection, CI verda. Això és la diferència entre "un repo de codi" i "un repo que demostra que sé treballar en equip".
+
 ## Tech Stack
 
 - **Framework:** FastAPI (async, Python 3.12)

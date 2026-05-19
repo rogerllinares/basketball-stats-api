@@ -1,0 +1,48 @@
+name: Feature / Enhancement
+description: New capability or improvement to existing one
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What needs solving and why. Skip rationale only if obvious from title.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How. Endpoints, data model, tests, ADR if non-trivial.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checklist. Done = all boxes ticked + CI green + reviewed.
+      placeholder: |
+        - [ ] Endpoint X returns 200 with payload Y
+        - [ ] Integration test covers happy path + 1 edge case
+        - [ ] ADR-NNNN written if decision non-trivial
+        - [ ] README updated if user-facing
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P1 — high
+        - P2 — medium
+        - P3 — low
+      default: 1
+    validations:
+      required: true
+  - type: input
+    id: milestone
+    attributes:
+      label: Phase / Milestone
+      description: Which GSD phase or milestone this belongs to.
+      placeholder: Phase 2 — Live Deploy
