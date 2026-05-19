@@ -51,4 +51,6 @@ def create_app() -> FastAPI:
     return app
 
 
-app = create_app()
+# NOTE: NO module-level ``app = create_app()`` — that would require ``DATABASE_URL`` at
+# import time, breaking ``pytest --collect-only`` and tests that monkeypatch env.
+# Uvicorn uses ``--factory`` so it calls ``create_app()`` after the env is set up.

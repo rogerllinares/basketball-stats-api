@@ -42,4 +42,4 @@ EXPOSE 8000
 
 # Migrations run on every boot (idempotent — alembic exits 0 when already at head).
 # Failure surfaces in Koyeb runtime logs (Q4 default).
-CMD ["sh", "-c", "alembic upgrade head && uvicorn basketball_stats.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn --factory basketball_stats.main:create_app --host 0.0.0.0 --port ${PORT}"]
