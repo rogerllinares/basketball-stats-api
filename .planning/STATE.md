@@ -1,7 +1,14 @@
 ---
-project: basketball-stats-api
-created: 2026-05-19
-updated: 2026-05-19
+gsd_state_version: 1.0
+milestone: v0.1.0
+milestone_name: milestone
+status: Roadmap draft generated, awaiting Roger approval
+last_updated: "2026-05-19T12:24:44.378Z"
+progress:
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # STATE — Basketball Stats API
@@ -52,6 +59,7 @@ Esperar approval de Roger sobre ROADMAP.md. Si OK → `/gsd-discuss-phase 1` per
 ## Accumulated Context
 
 ### Key decisions (mirror PROJECT.md §Key Decisions)
+
 - Stack FastAPI + Postgres pur + Docker + GHA + Koyeb + Neon LOCKED 2026-05-19.
 - Domini bàsquet català FCBQ (no NBA defaults).
 - 43 v1 REQ-IDs post-review (original 40 + READ-09 + OBS-08 + INFRA-06).
@@ -60,9 +68,11 @@ Esperar approval de Roger sobre ROADMAP.md. Si OK → `/gsd-discuss-phase 1` per
 - **Seed minimal + OpenAPI examples movits de P5 a P2 2026-05-19** (sense ells P2 retorna `[]` i `/docs` es veu amateur).
 
 ### Open todos
+
 - (none pre-approval)
 
 ### Blockers
+
 - (none — awaiting approval gate)
 
 ## Decision Log
@@ -71,4 +81,4 @@ Veure `PROJECT.md §Key Decisions` + `ROADMAP.md §Notes` per justificació d'or
 
 ## Session Continuity
 
-Last session: roadmap generation 2026-05-19 (via `/gsd-new-project` orchestrator → gsd-roadmapper). Next session should resume amb approval gate; després `/gsd-discuss-phase 1` carregarà Phase 1 Foundation.
+Last session: 2026-05-19T12:24:44.366Z
