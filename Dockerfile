@@ -3,7 +3,7 @@
 # Image target: < 200 MB (INFRA-02). Non-root user. BuildKit cache for uv.
 # CMD runs alembic upgrade head then uvicorn (Q4 default — failure mode visible in Koyeb logs).
 
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 COPY --from=ghcr.io/astral-sh/uv:0.11.15 /uv /uvx /bin/
 WORKDIR /app
 
@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 
 
-FROM python:3.12-slim AS runtime
+FROM python:3.14-slim AS runtime
 WORKDIR /app
 
 # Non-root user.
