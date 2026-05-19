@@ -65,6 +65,9 @@ migrations/__pycache__/
 SETUP.local.md
 scripts/neon_probe.py
 
+# Internal tooling logs (gstack audit traces)
+.gstack/
+
 # OS
 *.bak
 *.tmp
