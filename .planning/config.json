@@ -1,0 +1,24 @@
+{
+  "mode": "interactive",
+  "granularity": "coarse",
+  "parallelization": true,
+  "commit_docs": true,
+  "model_profile": "balanced",
+  "workflow": {
+    "research": true,
+    "plan_check": true,
+    "verifier": true,
+    "nyquist_validation": false,
+    "auto_advance": false
+  },
+  "planning": {
+    "commit_docs": true,
+    "sub_repos": []
+  },
+  "_meta": {
+    "created": "2026-05-19",
+    "created_by": "/gsd-new-project (manual init, gsd-sdk not in PATH)",
+    "stack_locked": true,
+    "stack_locked_reason": "Stack pre-decidit per Roger 2026-05-19 abans d'init; no re-debatir sense aprovació explícita"
+  }
+}
