@@ -1,0 +1,45 @@
+# RESEARCH §7.4 — api + postgres only (no Redis at MVP, ADR-0001).
+# - Named volume `pg_data` survives `docker compose down` (D-24, P4.4 mitigated).
+# - api waits for postgres health (P4.5 race condition mitigated).
+# - api binds-mounts src/ for dev hot-reload (D-25).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bbs_postgres
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: basketball_stats_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d basketball_stats_dev"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bbs_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://dev:dev@postgres:5432/basketball_stats_dev
+      DATABASE_URL_DIRECT: postgresql://dev:dev@postgres:5432/basketball_stats_dev
+      ENV: dev
+      LOG_LEVEL: INFO
+      PORT: "8000"
+    command: ["sh", "-c", "alembic upgrade head && uvicorn basketball_stats.main:app --host 0.0.0.0 --port 8000 --reload"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src
+
+volumes:
+  pg_data:

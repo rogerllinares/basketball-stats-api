@@ -1,0 +1,41 @@
+# Keep image small + leak-free. RESEARCH §7.3.
+.git
+.github
+.gitignore
+.gitattributes
+.gitleaks.toml
+.dockerignore
+Dockerfile
+docker-compose*.yml
+
+# Python venv / caches
+.venv
+.python-version
+__pycache__
+*.py[cod]
+*.egg-info
+dist
+build
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# Tests + planning (not needed in prod image)
+tests
+.planning
+docs
+
+# Env files — never bake secrets into the image (P4.3)
+.env
+.env.*
+!.env.example
+
+# Editor / OS noise
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+SETUP.local.md
+scripts
