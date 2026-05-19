@@ -1,0 +1,36 @@
+# R8 — must include commit-msg hook type, otherwise conventional-pre-commit
+# silently never fires (default install_hook_types is [pre-commit] only).
+default_install_hook_types: [pre-commit, commit-msg]
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.14
+    hooks:
+      - id: uv-lock
+
+  - repo: local
+    hooks:
+      - id: mypy-strict
+        name: mypy --strict (project venv)
+        entry: uv run --frozen mypy --strict src
+        language: system
+        types: [python]
+        pass_filenames: false
