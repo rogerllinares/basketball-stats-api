@@ -95,12 +95,19 @@ async def seeded_session(db_session: AsyncSession) -> AsyncIterator[AsyncSession
 @pytest_asyncio.fixture
 async def async_client(
     seeded_session: AsyncSession,
+    database_url_direct: str,
+    database_url_async: str,
 ) -> AsyncIterator[httpx.AsyncClient]:  # type: ignore[name-defined]  # noqa: F821
     """Yield an httpx AsyncClient bound to the FastAPI app + the seeded test session.
 
     Overrides ``get_db`` so every endpoint touches the test container DB.
+    Settings env vars are populated from the test container URLs before
+    ``create_app()`` instantiates Settings.
     """
     import httpx
+
+    os.environ.setdefault("DATABASE_URL", database_url_async)
+    os.environ.setdefault("DATABASE_URL_DIRECT", database_url_direct)
 
     from basketball_stats.api.v1.deps import get_db
     from basketball_stats.main import create_app

@@ -15,13 +15,13 @@ async def test_openapi_components_have_examples(async_client: httpx.AsyncClient)
 
     schemas = response.json()["components"]["schemas"]
 
+    # Only schemas that are referenced by P2 endpoints appear in the OpenAPI
+    # components map. TeamRead / CoachRead / *Create are P3 draft schemas.
     must_have_examples = (
         "CompetitionRead",
-        "TeamRead",
         "TeamDetailRead",
         "PlayerRead",
         "PlayerStatsRead",
-        "CoachRead",
         "BoxScoreRead",
         "GameRead",
         "GameSummaryRead",

@@ -18,7 +18,7 @@ import asyncio
 from dataclasses import dataclass
 from datetime import date
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from basketball_stats.core.db import get_session_factory
@@ -98,20 +98,28 @@ async def _is_already_seeded(session: AsyncSession) -> bool:
 
 
 async def _truncate_p2_tables(session: AsyncSession) -> None:
-    """Reverse FK order — strictly delete, never DROP."""
-    for table in (
-        BoxScore,
-        Game,
-        CoachingAssignment,
-        Roster,
-        Coach,
-        Player,
-        Team,
-        Competition,
-        Season,
-        Club,
-    ):
-        await session.execute(delete(table))
+    """Reset all P2 tables AND auto-increment sequences (test repeatability).
+
+    Using TRUNCATE ... RESTART IDENTITY CASCADE so each test that requests
+    ``seeded_session`` sees Player.id starting from 1 again (otherwise auto-IDs
+    accumulate across tests and ``/api/v1/players/by-id/1`` resolves to a deleted row).
+    """
+    tables = ", ".join(
+        t.__tablename__
+        for t in (
+            BoxScore,
+            Game,
+            CoachingAssignment,
+            Roster,
+            Coach,
+            Player,
+            Team,
+            Competition,
+            Season,
+            Club,
+        )
+    )
+    await session.execute(text(f"TRUNCATE TABLE {tables} RESTART IDENTITY CASCADE"))
 
 
 async def seed(session: AsyncSession, *, force: bool = False) -> dict[str, int]:
