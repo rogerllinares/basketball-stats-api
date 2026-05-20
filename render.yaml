@@ -1,0 +1,40 @@
+# Render Infrastructure-as-Code — Phase 1 Path B.
+#
+# See docs/setup/render-neon.md for the manual one-time wiring (connecting
+# the GitHub repo to Render). After that wiring, this file is the source of
+# truth for the service config.
+#
+# Why IaC and not dashboard-only: portfolio signal. A recruiter cloning the
+# repo can read the deploy config without an account on Render.
+#
+# Secrets (DATABASE_URL, DATABASE_URL_DIRECT, JWT_SECRET) are NOT declared
+# here — they live in Render's encrypted Environment store. Listed in
+# `envVars` with `sync: false` so Render won't try to overwrite them from
+# this file.
+
+services:
+  - type: web
+    name: basketball-stats-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: master
+    # Manual deploys only — same policy as SST. Prevents free-tier build
+    # minutes from being burned on every dependabot patch.
+    autoDeploy: false
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        sync: false       # populated via Render dashboard (Neon pooled URL)
+      - key: DATABASE_URL_DIRECT
+        sync: false       # populated via Render dashboard (Neon direct URL)
+      - key: JWT_SECRET
+        sync: false       # populated via Render dashboard (openssl rand -hex 32)
+      - key: ENV
+        value: prod
+      - key: LOG_LEVEL
+        value: INFO
+      - key: PORT
+        value: "8000"
