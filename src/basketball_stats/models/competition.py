@@ -43,7 +43,11 @@ class Competition(Base):
     group_no: Mapped[int] = mapped_column(nullable=False)
     season_id: Mapped[int] = mapped_column(ForeignKey("seasons.id"), nullable=False)
     phase: Mapped[CompetitionPhase] = mapped_column(
-        Enum(CompetitionPhase, name="competition_phase"),
+        Enum(
+            CompetitionPhase,
+            name="competition_phase",
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
         nullable=False,
     )
 
