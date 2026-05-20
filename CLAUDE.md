@@ -46,7 +46,7 @@ REST API FastAPI + Postgres pur (Neon) per al tracking de stats de bàsquet amat
 - **Lint/format:** ruff + mypy --strict (pre-commit + CI)
 - **Container:** Docker multi-stage + docker-compose
 - **CI:** GitHub Actions (`.github/workflows/ci.yml`)
-- **Deploy:** Koyeb free tier (region `fra`) + ghcr.io
+- **Deploy:** Render free Docker web service (region `frankfurt`) + `render.yaml` IaC. Pivoted from Koyeb 2026-05-20 (free tier removed post-Mistral). ADR-0002 supersedes ADR-0001 Deploy row. Cold-start mitigation via GHA warm-ping every 14min.
 - **Auth (P3+):** JWT via python-jose
 
 ## Folder Structure
@@ -62,12 +62,15 @@ Basketball Stats API/
 ├── tests/{unit,integration}/
 ├── alembic/
 ├── docs/
-│   ├── adrs/                   ← ADR-0001 koyeb-neon
-│   └── setup/koyeb-neon.md     ← Path B manual deploy walkthrough
+│   ├── adr/                    ← 0001 stack-election · 0002 deploy-pivot-render
+│   └── setup/
+│       ├── render-neon.md      ← Path B active deploy walkthrough
+│       └── koyeb-neon.md       ← SUPERSEDED (historical)
+├── render.yaml                 ← Render IaC (service config)
 ├── Dockerfile, docker-compose.yml, .dockerignore
 ├── pyproject.toml, uv.lock, .python-version
 ├── .pre-commit-config.yaml, .gitleaks.toml
-├── .github/workflows/ci.yml, dependabot.yml
+├── .github/workflows/ci.yml, warm-ping.yml, dependabot.yml
 └── README.md
 ```
 
@@ -82,9 +85,9 @@ Basketball Stats API/
 
 ## Estado actual
 
-> **Last updated:** 2026-05-19
-> **Status:** Phase 1 Path A **complete** + lint-clean + CI verda. 17/22 tasks fets. Repo públic https://github.com/rogerllinares/basketball-stats-api.
-> **Next:** Path B (T19 Neon + T20 Koyeb + T22-finalpush live URL). Bloquejat només per creació de comptes Roger.
+> **Last updated:** 2026-05-20
+> **Status:** Phase 1 Path A **complete** + lint-clean + CI verda. 17/22 tasks fets. Repo públic https://github.com/rogerllinares/basketball-stats-api. **Deploy pivot Koyeb→Render committed 2026-05-20** (ADR-0002): Neon project creat, Render IaC + warm-ping workflow + ADR-0002 al repo, Koyeb walkthrough superseded.
+> **Next:** Connectar Render dashboard al repo (one-time GitHub auth), omplir 3 secrets (`DATABASE_URL` pooled + `DATABASE_URL_DIRECT` direct + `JWT_SECRET`), Manual Deploy → wait healthy, set `LIVE_URL` repo variable, editar README live URL.
 
 **Dependabot PRs (status 2026-05-19 16:15 — post-fix):**
 - PR#1 python 3.12→3.14-slim — 🟡 OPEN, decisió Roger (3.12 era pin intencional; valorar bump major)
