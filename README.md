@@ -1,6 +1,6 @@
 # Basketball Stats API
 
-> REST API per a estadístiques de bàsquet amateur — FCBQ. FastAPI + Postgres pur (Neon) + Docker + Koyeb.
+> REST API per a estadístiques de bàsquet amateur — FCBQ. FastAPI + Postgres pur (Neon) + Docker + Render.
 
 ![CI](https://github.com/rogerllinares/basketball-stats-api/actions/workflows/ci.yml/badge.svg)
 ![Ruff](https://img.shields.io/badge/lint-ruff-blue)
@@ -8,7 +8,7 @@
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-**Live URL:** `(coming soon — first deploy pending in execute follow-up)`
+**Live:** <https://basketball-stats-api-banq.onrender.com> · [`/healthz`](https://basketball-stats-api-banq.onrender.com/healthz) · [`/docs`](https://basketball-stats-api-banq.onrender.com/docs)
 
 ## What this is
 
@@ -39,15 +39,17 @@ open http://localhost:8000/docs
 
 ## Deploy
 
-Manual deploy walkthrough (Phase 1): see [`docs/setup/koyeb-neon.md`](docs/setup/koyeb-neon.md).
-Tag-driven automation lands in Phase 4 (`INFRA-04`).
+Manual deploy walkthrough (Phase 1): see [`docs/setup/render-neon.md`](docs/setup/render-neon.md). IaC at [`render.yaml`](render.yaml). Tag-driven automation lands in Phase 4 (`INFRA-04`).
+
+The original target was Koyeb; the pivot to Render is documented in [`docs/adr/0002-deploy-pivot-render.md`](docs/adr/0002-deploy-pivot-render.md).
 
 ## Stack walkthrough
 
 Phase 5 polish — full per-file walkthrough lands then. For now:
 
 - [`docs/adr/0001-stack-election.md`](docs/adr/0001-stack-election.md) — rationale per cada eina del stack.
-- [`docs/setup/koyeb-neon.md`](docs/setup/koyeb-neon.md) — operational deploy doc.
+- [`docs/adr/0002-deploy-pivot-render.md`](docs/adr/0002-deploy-pivot-render.md) — deploy pivot Koyeb → Render.
+- [`docs/setup/render-neon.md`](docs/setup/render-neon.md) — operational deploy doc.
 - [`.planning/`](. planning/) — full project planning trail (PROJECT, REQUIREMENTS, ROADMAP, per-phase CONTEXT + RESEARCH + PLAN).
 
 ## License
