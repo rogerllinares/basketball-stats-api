@@ -29,3 +29,9 @@ updates:
     labels:
       - dependencies
       - docker
+    # Python base-image major bumps are pinned intentionally (ADR-0001 +
+    # PR #1 wontfix 2026-05-20). Patch/minor bumps still flow through.
+    ignore:
+      - dependency-name: "python"
+        update-types:
+          - "version-update:semver-major"
