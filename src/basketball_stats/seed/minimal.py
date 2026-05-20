@@ -68,19 +68,13 @@ PLAYERS: tuple[PlayerFixture, ...] = (
 # — but ROADMAP says "12 box_scores" total, not 12 per team. We follow the PLAN
 # wording: 12 box_scores for home + 12 for visitors = 24, mirroring acta length).
 BOX_SCORES_HOME: tuple[tuple[int, int, int, int, int, int, int, int], ...] = (
-    # (player_idx, pts, reb_of, reb_def, ast, rec, tap, fc)
+    # (player_idx within Granollers slot 0-5, pts, reb_of, reb_def, ast, rec, tap, fc)
     (0, 18, 2, 4, 3, 2, 1, 2),
     (1, 14, 1, 3, 2, 1, 0, 3),
     (2, 11, 0, 2, 5, 3, 0, 1),
     (3, 10, 3, 5, 1, 1, 1, 2),
     (4, 8, 1, 2, 2, 2, 0, 3),
     (5, 6, 0, 1, 1, 1, 0, 1),
-    (6, 5, 1, 2, 0, 0, 0, 2),
-    (7, 4, 0, 1, 1, 0, 0, 1),
-    (8, 2, 0, 1, 0, 0, 0, 0),
-    (9, 1, 0, 0, 0, 1, 0, 0),
-    (10, 1, 0, 0, 0, 0, 0, 0),
-    (11, 0, 0, 0, 0, 0, 0, 0),
 )
 
 

@@ -27,8 +27,8 @@ async def test_game_detail_has_quarters_and_box_scores(
     ):
         assert key in body, f"missing key {key}"
 
-    # box_scores embedded: 24 rows (12 home + 12 away from seed_minimal).
-    assert len(body["box_scores"]) == 24
+    # box_scores embedded: 12 rows (6 Granollers + 6 Artés from seed_minimal).
+    assert len(body["box_scores"]) == 12
 
     # Every box-score has the computed val/reb columns surfaced.
     for bs in body["box_scores"]:

@@ -31,7 +31,7 @@ async def test_seed_minimal_loads(seeded_session: AsyncSession) -> None:
         Coach: 1,
         CoachingAssignment: 2,
         Game: 1,
-        BoxScore: 24,
+        BoxScore: 12,
     }
     for model, count in expected.items():
         result = await seeded_session.execute(select(func.count()).select_from(model))
