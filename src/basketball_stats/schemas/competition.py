@@ -24,7 +24,6 @@ class CompetitionRead(BaseModel):
                     "group_no": 4,
                     "season_id": 1,
                     "phase": "fase_previa",
-                    "display_name": "1a Territorial Masculí · BCN · Grup 4 · 2025-26",
                 },
                 {
                     "id": 2,
@@ -34,7 +33,6 @@ class CompetitionRead(BaseModel):
                     "group_no": 1,
                     "season_id": 1,
                     "phase": "playoff",
-                    "display_name": "Super Copa Masculina · Playoff · 2025-26",
                 },
             ]
         },
@@ -46,8 +44,7 @@ class CompetitionRead(BaseModel):
     territory: str
     group_no: int
     season_id: int
-    phase: Phase
-    display_name: str | None = None
+    phase: Phase | None = None
 
 
 class CompetitionCreate(BaseModel):
