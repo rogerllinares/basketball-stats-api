@@ -73,8 +73,7 @@ async def get_competition(competition_id: int, session: SessionDep) -> Competiti
     response_model=list[StandingsRow],
     summary="Standings (RANK window function)",
     description=(
-        "Standings with FEB-style tie-breakers (wins → point_diff → points_for)."
-        " STAT-01 + SC1."
+        "Standings with FEB-style tie-breakers (wins → point_diff → points_for). STAT-01 + SC1."
     ),
 )
 async def get_standings(competition_id: int, session: SessionDep) -> list[StandingsRow]:

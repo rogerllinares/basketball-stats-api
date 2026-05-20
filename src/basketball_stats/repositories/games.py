@@ -21,11 +21,7 @@ from basketball_stats.models import Game
 
 async def get_game_with_box_scores(session: AsyncSession, game_id: int) -> Game | None:
     """Full game payload — box-scores eager-loaded."""
-    stmt = (
-        select(Game)
-        .where(Game.id == game_id)
-        .options(selectinload(Game.box_scores))
-    )
+    stmt = select(Game).where(Game.id == game_id).options(selectinload(Game.box_scores))
     result = await session.execute(stmt)
     return result.scalar_one_or_none()
 
@@ -40,9 +36,7 @@ async def list_competition_games(
 ) -> tuple[list[Game], int]:
     """Paginated list of games for a competition; optional matchday filter."""
     stmt = select(Game).where(Game.competition_id == competition_id)
-    count_stmt = (
-        select(func.count()).select_from(Game).where(Game.competition_id == competition_id)
-    )
+    count_stmt = select(func.count()).select_from(Game).where(Game.competition_id == competition_id)
 
     if matchday_no is not None:
         stmt = stmt.where(Game.matchday_no == matchday_no)

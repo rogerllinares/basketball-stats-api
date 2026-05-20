@@ -230,11 +230,16 @@ async def seed(session: AsyncSession, *, force: bool = False) -> dict[str, int]:
         game_date=date(2025, 10, 15),
         home_team_id=team_granollers.id,
         away_team_id=team_artes.id,
-        q1_home=20, q1_away=22,
-        q2_home=18, q2_away=21,
-        q3_home=22, q3_away=20,
-        q4_home=20, q4_away=21,
-        total_home=80, total_away=84,
+        q1_home=20,
+        q1_away=22,
+        q2_home=18,
+        q2_away=21,
+        q3_home=22,
+        q3_away=20,
+        q4_home=20,
+        q4_away=21,
+        total_home=80,
+        total_away=84,
     )
     session.add(game)
     await session.flush()
@@ -245,8 +250,13 @@ async def seed(session: AsyncSession, *, force: bool = False) -> dict[str, int]:
                 game_id=game.id,
                 player_id=players[idx].id,
                 team_id=team_granollers.id,
-                pts=pts, reb_of=reb_of, reb_def=reb_def,
-                ast=ast, rec=rec, tap=tap, fc=fc,
+                pts=pts,
+                reb_of=reb_of,
+                reb_def=reb_def,
+                ast=ast,
+                rec=rec,
+                tap=tap,
+                fc=fc,
             )
         )
     for idx, pts, reb_of, reb_def, ast, rec, tap, fc in BOX_SCORES_AWAY:
@@ -257,8 +267,13 @@ async def seed(session: AsyncSession, *, force: bool = False) -> dict[str, int]:
                 game_id=game.id,
                 player_id=players[idx + 6].id,
                 team_id=team_artes.id,
-                pts=pts, reb_of=reb_of, reb_def=reb_def,
-                ast=ast, rec=rec, tap=tap, fc=fc,
+                pts=pts,
+                reb_of=reb_of,
+                reb_def=reb_def,
+                ast=ast,
+                rec=rec,
+                tap=tap,
+                fc=fc,
             )
         )
 
