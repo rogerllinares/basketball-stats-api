@@ -13,7 +13,7 @@ import structlog
 from fastapi import FastAPI
 
 from basketball_stats.api.errors import register_exception_handlers
-from basketball_stats.api.v1 import health
+from basketball_stats.api.v1 import api_router, health
 from basketball_stats.core.config import get_settings
 from basketball_stats.core.db import get_engine
 from basketball_stats.core.logging import configure_logging
@@ -48,6 +48,7 @@ def create_app() -> FastAPI:
     app.add_middleware(RequestIdMiddleware)
     register_exception_handlers(app)
     app.include_router(health.router)
+    app.include_router(api_router)
     return app
 
 
