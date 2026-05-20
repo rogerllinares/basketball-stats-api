@@ -29,20 +29,22 @@ progress:
 
 ## Current Position
 
-**Phase:** none (pre-Phase-1)
+**Phase:** 2 (core-entities — context gathered, ready for planning)
 **Plan:** none
-**Status:** Roadmap draft generated, awaiting Roger approval
-**Progress:** `[##########..............................] 0/5 phases`
+**Status:** Phase 2 CONTEXT.md written; next is `/gsd-plan-phase 2`
+**Progress:** `[########################................] 1/5 phases` (P1 SHIPPED 2026-05-20)
 
 ## Roadmap Snapshot
 
 | # | Phase | REQs | Status |
 |---|---|---|---|
-| 1 | Foundation | 8 | Not started |
-| 2 | Core entities + public read | 23 | Not started |
+| 1 | Foundation | 8 | ✅ SHIPPED 2026-05-20 (live https://basketball-stats-api-banq.onrender.com) |
+| 2 | Core entities + public read | 23 | Context gathered 2026-05-20 — ready for plan |
 | 3 | Auth + coach writes | 6 | Not started |
 | 4 | Differentiators + deploy automation | 3 | Not started |
 | 5 | Polish (docs-only) | 3 | Not started |
+
+Insertable phase (post-P2-ship): **2.5 FCBQ Ingest CLI** — decidit 2026-05-20 durant `/gsd-discuss-phase 2`. Create via `/gsd-insert-phase`.
 
 ## Recent Activity
 
@@ -51,10 +53,12 @@ progress:
 - 2026-05-19 — REQUIREMENTS.md drafted with 40 v1 REQ-IDs across 7 categories.
 - 2026-05-19 — ROADMAP.md drafted with 5 phases coarse, 100% requirement coverage validated, traceability matrix written back to REQUIREMENTS.md.
 - 2026-05-19 — Roadmap revised post-review (Claude critique + Roger approval): Redis dropped from MVP, `/matchday/ideal-five` promoted from v2 to Phase 4 flagship, seed-minimal + OpenAPI examples moved P5→P2. Total v1 REQs: 40→43. Coverage 43/43 mantingut.
+- 2026-05-20 — Phase 1 SHIPPED. Pivot Koyeb→Render (ADR-0002). Live URL https://basketball-stats-api-banq.onrender.com.
+- 2026-05-20 — Phase 2 CONTEXT.md gathered. 20 D2-decisions captures. Phase 2.5 FCBQ Ingest CLI deferred (insertable post-P2). Async sub-decisions: Player PK híbrid, normalització UPPER+sense-accents, Team permanent+Roster M:N, VAL=PIR FIBA literal STORED, default 0 per fouls_drawn/blocks_received + ADR-0003 asimetria, REB=2n GENERATED column, standings simple FEB-style + ADR-0004 gap normatiu, leaderboards window functions on-the-fly, pagination offset/limit, seed fictius català, schemas Create/Update drafts a P2 (writes a P3).
 
 ## Next Action
 
-Esperar approval de Roger sobre ROADMAP.md. Si OK → `/gsd-discuss-phase 1` per començar Foundation. Si revisions → re-edit in place i re-validar coverage.
+`/gsd-plan-phase 2` per crear PLAN.md de Phase 2 amb tasks atòmiques.
 
 ## Accumulated Context
 
