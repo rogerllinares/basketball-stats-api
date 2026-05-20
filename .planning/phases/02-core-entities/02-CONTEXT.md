@@ -199,7 +199,7 @@ Codi existent de P1 (commit master HEAD ~`540d9e9`):
 - `src/basketball_stats/api/v1/deps.py` — Re-exporta `get_db`. **P2 afegirà `PaginationParams` Depends helper aquí.**
 - `src/basketball_stats/api/v1/health.py` — `/healthz` endpoint (P1 D-09/D-10). **No tocar.**
 - `tests/conftest.py` — testcontainers `postgres_container` fixture + `db_session` (P1 D-16). **Reusat per P2 integration tests; possible afegir `seed_minimal` fixture que carregui dades fictícies per a tests d'standings/leaderboards.**
-- `alembic/versions/0001_baseline.py` — Buida `upgrade() pass / downgrade() pass` (P1 D-06). **P2 crea `0002_core_entities.py` damunt aquesta.**
+- `migrations/versions/0001_baseline.py` — Buida `upgrade() pass / downgrade() pass` (P1 D-06). **P2 crea `0002_core_entities.py` damunt aquesta.** (Path verificat 2026-05-20; `alembic.ini` declara `script_location = %(here)s/migrations`.)
 
 ### Established Patterns (de P1, mandatory mantenir)
 - `src/` layout — **Tots els nous models a `src/basketball_stats/models/` (1 fitxer per concepte de domini, no per entitat sola).**

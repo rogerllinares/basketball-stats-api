@@ -60,7 +60,7 @@ Basketball Stats API/
 │   └── research/               ← SUMMARY, STACK, FEATURES, ARCHITECTURE, PITFALLS
 ├── src/basketball_stats/       ← api, core, models, schemas, services, repositories, tasks
 ├── tests/{unit,integration}/
-├── alembic/
+├── migrations/                ← Alembic (script_location en alembic.ini)
 ├── docs/
 │   ├── adr/                    ← 0001 stack-election · 0002 deploy-pivot-render
 │   └── setup/
