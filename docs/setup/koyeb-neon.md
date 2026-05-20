@@ -1,3 +1,13 @@
+> # ⚠ SUPERSEDED — 2026-05-20
+> #
+> # This walkthrough is **no longer active**. Koyeb removed its free tier
+> # post-Mistral acquisition (the R2 risk in RESEARCH.md materialized).
+> # See **`docs/setup/render-neon.md`** for the active deploy path and
+> # **`docs/adr/0002-deploy-pivot-render.md`** for the full rationale.
+> #
+> # Kept here as historical context — the deploy path was rebuilt from
+> # scratch, not patched on top of this doc.
+
 # Manual deploy walkthrough — Neon + Koyeb (Phase 1)
 
 Phase 1 deploys manually. The full pipeline (build → push → migrate → release) is
