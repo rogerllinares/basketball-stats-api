@@ -86,11 +86,11 @@ Basketball Stats API/
 ## Estado actual
 
 > **Last updated:** 2026-05-20
-> **Status:** Phase 1 Path A **complete** + lint-clean + CI verda. 17/22 tasks fets. Repo públic https://github.com/rogerllinares/basketball-stats-api. **Deploy pivot Koyeb→Render committed 2026-05-20** (ADR-0002): Neon project creat, Render IaC + warm-ping workflow + ADR-0002 al repo, Koyeb walkthrough superseded.
-> **Next:** Connectar Render dashboard al repo (one-time GitHub auth), omplir 3 secrets (`DATABASE_URL` pooled + `DATABASE_URL_DIRECT` direct + `JWT_SECRET`), Manual Deploy → wait healthy, set `LIVE_URL` repo variable, editar README live URL.
+> **Status:** ✅ **Phase 1 SHIPPED 2026-05-20.** Live: <https://basketball-stats-api-banq.onrender.com> (`/healthz` ok, `/docs` ok). All 5 SC met (SC1 via CI; Docker local smoke still blocked on Docker Desktop missing — non-blocking). Deploy on Render free Docker (pivot from Koyeb mid-execute, ADR-0002). asyncpg sslmode bug detected + fixed. PR#1 python 3.14 closed wontfix. Issues #5+#6 closed. CI verda master.
+> **Next:** Phase 2 Domain Entities. `/gsd-discuss-phase 2` per arrencar.
 
-**Dependabot PRs (status 2026-05-19 16:15 — post-fix):**
-- PR#1 python 3.12→3.14-slim — 🟡 OPEN, decisió Roger (3.12 era pin intencional; valorar bump major)
+**Dependabot PRs (status 2026-05-20):**
+- PR#1 python 3.12→3.14-slim — ❌ CLOSED wontfix 2026-05-20 (ADR-0001 single-version policy + dependabot.yml ignora Docker python majors a partir d'ara)
 - PR#2 actions/checkout v5→v6 — ✅ MERGED `60f4ad3`
 - PR#3 pytest-env 1.2→1.6 — ✅ MERGED `1aa229d` (uv.lock regenerat manualment)
 - PR#4 pydantic-settings 2.13→2.14.1 — ✅ MERGED `feff2d6` (uv.lock regenerat manualment)
