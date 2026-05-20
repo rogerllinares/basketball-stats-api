@@ -47,7 +47,7 @@ class CompetitionRead(BaseModel):
     group_no: int
     season_id: int
     phase: Phase
-    display_name: str
+    display_name: str | None = None
 
 
 class CompetitionCreate(BaseModel):
