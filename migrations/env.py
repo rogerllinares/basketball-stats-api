@@ -15,8 +15,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
+from sqlalchemy.ext.asyncio import create_async_engine
 
+from basketball_stats.core.config import to_asyncpg_url
 from basketball_stats.models.base import Base
 
 config = context.config
@@ -25,8 +26,8 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 _url_raw = os.environ.get("DATABASE_URL_DIRECT", "")
-if _url_raw and not _url_raw.startswith("postgresql+asyncpg://"):
-    _url_raw = _url_raw.replace("postgresql://", "postgresql+asyncpg://", 1)
+if _url_raw:
+    _url_raw = to_asyncpg_url(_url_raw)
 config.set_main_option("sqlalchemy.url", _url_raw)
 
 target_metadata = Base.metadata
@@ -54,10 +55,13 @@ def do_run_migrations(connection: Connection) -> None:
 
 
 async def run_async_migrations() -> None:
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    # Neon requires SSL. asyncpg rejects ``sslmode`` URL params; SSL is set
+    # via ``connect_args`` here, matching db.py. ``to_asyncpg_url`` already
+    # stripped ``sslmode`` from the URL upstream.
+    connectable = create_async_engine(
+        config.get_main_option("sqlalchemy.url") or "",
         poolclass=pool.NullPool,
+        connect_args={"ssl": "require"},
     )
 
     async with connectable.connect() as connection:

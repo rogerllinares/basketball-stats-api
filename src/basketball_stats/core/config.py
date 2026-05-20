@@ -10,8 +10,30 @@ Two database URLs are required:
 """
 
 from functools import lru_cache
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def to_asyncpg_url(raw: str) -> str:
+    """Convert a Neon-style ``postgresql://...?sslmode=require`` URL to one
+    asyncpg's dialect accepts.
+
+    Two steps:
+    1. Swap the scheme to ``postgresql+asyncpg://`` so SQLAlchemy picks the
+       async dialect.
+    2. Strip libpq-only query params (``sslmode``, ``channel_binding``).
+       asyncpg's ``connect()`` raises ``TypeError: unexpected keyword
+       argument 'sslmode'``; SSL is enforced via ``connect_args={"ssl":
+       "require"}`` in db.py and migrations/env.py instead.
+    """
+    if not raw.startswith("postgresql+asyncpg://"):
+        raw = raw.replace("postgresql://", "postgresql+asyncpg://", 1)
+    parsed = urlparse(raw)
+    params = parse_qs(parsed.query)
+    params.pop("sslmode", None)
+    params.pop("channel_binding", None)
+    return urlunparse(parsed._replace(query=urlencode(params, doseq=True)))
 
 
 class Settings(BaseSettings):
@@ -32,11 +54,11 @@ class Settings(BaseSettings):
     def async_database_url(self) -> str:
         """Return ``DATABASE_URL`` rewritten for the asyncpg driver.
 
-        Neon hands out ``postgresql://...`` URLs; SQLAlchemy 2.0 async engine needs
-        ``postgresql+asyncpg://...``. Done as a property (not on parse) so the original
-        value round-trips cleanly to logs / diagnostics.
+        Done as a property (not on parse) so the original value round-trips
+        cleanly to logs / diagnostics. See :func:`to_asyncpg_url` for the
+        scheme swap + libpq-param stripping rationale.
         """
-        return self.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return to_asyncpg_url(self.DATABASE_URL)
 
 
 @lru_cache(maxsize=1)

@@ -35,6 +35,10 @@ def get_engine() -> AsyncEngine:
         pool_pre_ping=True,
         pool_size=5,
         max_overflow=10,
+        # Neon requires SSL. asyncpg rejects ``sslmode`` URL params (libpq
+        # syntax), so SSL is enforced here. ``to_asyncpg_url`` strips
+        # ``sslmode`` from the URL upstream.
+        connect_args={"ssl": "require"},
     )
 
 
