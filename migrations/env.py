@@ -55,13 +55,13 @@ def do_run_migrations(connection: Connection) -> None:
 
 
 async def run_async_migrations() -> None:
-    # Neon requires SSL. asyncpg rejects ``sslmode`` URL params; SSL is set
-    # via ``connect_args`` here, matching db.py. ``to_asyncpg_url`` already
-    # stripped ``sslmode`` from the URL upstream.
+    # ``ssl=prefer`` mirrors db.py: SSL attempted first (Neon requires it),
+    # plaintext fallback for CI Postgres / testcontainers / local docker.
+    # asyncpg rejects libpq's ``sslmode``; ``to_asyncpg_url`` strips it.
     connectable = create_async_engine(
         config.get_main_option("sqlalchemy.url") or "",
         poolclass=pool.NullPool,
-        connect_args={"ssl": "require"},
+        connect_args={"ssl": "prefer"},
     )
 
     async with connectable.connect() as connection:

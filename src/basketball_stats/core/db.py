@@ -35,10 +35,12 @@ def get_engine() -> AsyncEngine:
         pool_pre_ping=True,
         pool_size=5,
         max_overflow=10,
-        # Neon requires SSL. asyncpg rejects ``sslmode`` URL params (libpq
-        # syntax), so SSL is enforced here. ``to_asyncpg_url`` strips
-        # ``sslmode`` from the URL upstream.
-        connect_args={"ssl": "require"},
+        # ``ssl=prefer``: asyncpg tries SSL first (Neon requires it) and
+        # falls back to plaintext if the server rejects (CI Postgres,
+        # testcontainers, local docker compose). asyncpg rejects libpq's
+        # ``sslmode`` URL syntax, so SSL mode is set here instead.
+        # ``to_asyncpg_url`` strips ``sslmode`` from the URL upstream.
+        connect_args={"ssl": "prefer"},
     )
 
 
