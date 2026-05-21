@@ -20,6 +20,7 @@ End state: una API REST FastAPI + Postgres pur desplegada a Koyeb amb Neon, amb 
 |---|------|------|-----------|------------------------|
 | 1 | Foundation | Skeleton desplegat amb CI verd i `/healthz` accessible públicament | 8 | 5 |
 | 2 | Core entities + public read | API pública amb window functions visible al codi, totes les entitats del domini català, seed mínim i OpenAPI examples | 23 | 7 |
+| 2.5 | FCBQ Ingest CLI (INSERTED) | Offline batch CLI scrapejant FCBQ (2a Catalana → Supercopa M+F) → JSON fixtures commitejats + loader, substituint el seed mínim amb dades reals catalanes | TBD | TBD |
 | 3 | Auth + coach writes | Coaches autenticats pugen i corregeixen box-scores amb recompute automàtic | 6 | 4 |
 | 4 | Differentiators + deploy automation | Flagship endpoint `/ideal-five` + full-text search jugadors + pipeline deploy on tag funcional | 3 | 4 |
 | 5 | Polish (docs-only) | README walkthrough + 6 ADRs + portfolio defense doc → tag `v0.1.0` | 3 | 4 |
@@ -57,6 +58,26 @@ End state: una API REST FastAPI + Postgres pur desplegada a Koyeb amb Neon, amb 
 7. Tots els Pydantic schemas (Create/Read/Update) tenen `model_config = ConfigDict(json_schema_extra={"examples": [...]})` amb dades realistes en català (noms equip tipus "CB Granollers"); `/docs` renderitza payload exemple a cada endpoint POST/PUT i resposta exemple a cada GET (verificat manualment a `localhost:8000/docs`).
 
 **Dependencies:** Phase 1
+
+**Plans:** TBD
+
+## Phase 2.5: FCBQ Ingest CLI (INSERTED 2026-05-21)
+
+**Context:** Inserted post Phase 2 ship per resoldre SC6 gap (`GET /api/v1/competitions` retornava `[]` en producció — seed minimal mai s'executava contra Neon). En lloc de fer un quick fix runtime del seed fictici, substituir-lo per ingest **offline batch de dades reals catalanes FCBQ** — major valor portfolio (recruiter veu equips, partits, jugadors reals al `/docs`) sense violar la constraint LOCKED `no-live-ingest` (cap consulta HTTP a FCBQ des de la API en producció).
+
+**Goal:** CLI Python executable (`python -m basketball_stats.ingest.fcbq <comp> <season>`) que scrapeja les pàgines HTML FCBQ d'una competició + temporada, normalitza a JSON fixtures versionats a `data/seed/fcbq/<comp-slug>-<season>.json`, i `data/seed/load_fcbq.py` carrega aquests fixtures al DB. La API en prod NO truca FCBQ — només llegeix les JSON fixtures committejades. Cobertura mínima: 2a Catalana M+F → Supercopa M+F (mateix nivell que basquethero.cat). Categories aproximades: super-copa, copa-catalunya, cc-1a, cc-2a, 1a-territorial, 2a-territorial × M+F × grups territorials (bcn/gir/tar/lle).
+
+**Requirements:** TBD (a definir a `/gsd-discuss-phase 2.5`)
+
+**Success criteria** (what must be TRUE):
+1. TBD — definits durant discuss-phase. Punts ancora previsibles:
+   - CLI scrapeja almenys 1 competició FCBQ (default: cc-2a M) i escriu JSON fixture vàlid a `data/seed/fcbq/`.
+   - `load_fcbq.py` executat contra Neon prod fa que `GET /api/v1/competitions` retorni ≥1 item (tanca SC6 P2).
+   - Cap codi del package `src/basketball_stats/` (production runtime) importa res de `ingest/` (separació strict offline ↔ runtime).
+   - ADR-0005 documenta la decisió "offline batch utility per preservar LOCKED no-live-ingest constraint" + alternatives considerades.
+   - CI verda amb test que verifica una fixture sample carrega sense errors via testcontainers.
+
+**Dependencies:** Phase 2 (models, migrations, repositories, schemas) + decision Roger 2026-05-21 DEFER SC6 a aquesta fase.
 
 **Plans:** TBD
 
