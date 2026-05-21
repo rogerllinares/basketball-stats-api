@@ -77,3 +77,50 @@ async def db_session(engine: AsyncEngine) -> AsyncIterator[AsyncSession]:
     factory = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
     async with factory() as session:
         yield session
+
+
+@pytest_asyncio.fixture
+async def seeded_session(db_session: AsyncSession) -> AsyncIterator[AsyncSession]:
+    """Seed the minimal Catalan fixture on a fresh per-test session.
+
+    P2 — used by standings/leaderboards/endpoint tests that need 24 box-scores +
+    2 teams + 12 players. Uses ``force=True`` so prior test state is wiped.
+    """
+    from basketball_stats.seed.minimal import seed
+
+    await seed(db_session, force=True)
+    yield db_session
+
+
+@pytest_asyncio.fixture
+async def async_client(
+    seeded_session: AsyncSession,
+    database_url_direct: str,
+    database_url_async: str,
+) -> AsyncIterator[httpx.AsyncClient]:  # type: ignore[name-defined]  # noqa: F821
+    """Yield an httpx AsyncClient bound to the FastAPI app + the seeded test session.
+
+    Overrides ``get_db`` so every endpoint touches the test container DB.
+    Settings env vars are populated from the test container URLs before
+    ``create_app()`` instantiates Settings.
+    """
+    import httpx
+
+    os.environ.setdefault("DATABASE_URL", database_url_async)
+    os.environ.setdefault("DATABASE_URL_DIRECT", database_url_direct)
+
+    from basketball_stats.api.v1.deps import get_db
+    from basketball_stats.main import create_app
+
+    app = create_app()
+
+    async def override_get_db() -> AsyncIterator[AsyncSession]:
+        yield seeded_session
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        yield client
+
+    app.dependency_overrides.clear()
