@@ -24,6 +24,7 @@ parse + look for game entities.
 Run: `py spike.py [league_slug]`  (default: cc-2a-m-grup-01)
 Stdlib-only: NO pip install required.
 """
+
 import json
 import re
 import sys
@@ -74,9 +75,17 @@ def walk_for_game_like(obj, hits: list, depth: int = 0):
         keys = set(obj.keys())
         # Heuristic: a game node usually has team identifiers + scores or date.
         markers = {
-            "equipoLocal", "equipoVisitante", "homeTeam", "awayTeam",
-            "puntosLocal", "puntosVisitante", "marcadorLocal",
-            "fechaPartido", "jornada", "matchDate", "fixtureDate",
+            "equipoLocal",
+            "equipoVisitante",
+            "homeTeam",
+            "awayTeam",
+            "puntosLocal",
+            "puntosVisitante",
+            "marcadorLocal",
+            "fechaPartido",
+            "jornada",
+            "matchDate",
+            "fixtureDate",
         }
         if len(keys & markers) >= 2:
             hits.append(obj)
@@ -123,7 +132,7 @@ def main():
     # Try decoding each payload and walking for game-like nodes.
     game_hits: list = []
     total_decoded = 0
-    for idx, payload in chunks:
+    for _idx, payload in chunks:
         obj = try_decode_payload(payload)
         if obj is None:
             continue
@@ -146,7 +155,7 @@ def main():
 
     def count_keys(o):
         if isinstance(o, dict):
-            for k in o.keys():
+            for k in o:
                 freq[k] = freq.get(k, 0) + 1
             for v in o.values():
                 count_keys(v)
@@ -154,7 +163,7 @@ def main():
             for v in o:
                 count_keys(v)
 
-    for idx, payload in chunks:
+    for _idx, payload in chunks:
         obj = try_decode_payload(payload)
         if obj is not None:
             count_keys(obj)
