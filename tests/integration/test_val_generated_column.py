@@ -14,7 +14,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 SETUP_STATEMENTS = (
     "INSERT INTO clubs (id, display_name, normalized_name) VALUES (901, 'CB Test', 'cb-test')",
-    "INSERT INTO seasons (id, start_year, label) VALUES (901, 2025, '2025-26-test')",
+    # start_year=2099 isolates this test from other integration tests that
+    # also create Season(start_year=2025) in the shared session-scope Postgres
+    # container (uq_seasons_start_year added in migration 0003).
+    "INSERT INTO seasons (id, start_year, label) VALUES (901, 2099, '2099-00-test')",
     "INSERT INTO competitions"
     " (id, category, gender, territory, group_no, season_id, phase)"
     " VALUES (901, '1a-territorial', 'm', 'bcn', 99, 901, 'fase_previa')",

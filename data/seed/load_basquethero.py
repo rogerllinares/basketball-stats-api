@@ -143,7 +143,7 @@ async def _upsert_competition(
         phase=CompetitionPhase.FASE_PREVIA,
     )
     stmt = ins.on_conflict_do_update(
-        index_elements=["category", "gender", "territory", "group_no", "season_id"],
+        index_elements=["category", "gender", "territory", "group_no", "season_id", "phase"],
         set_={"phase": ins.excluded.phase},
     ).returning(Competition.id)
     result = await session.execute(stmt)
