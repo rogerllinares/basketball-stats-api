@@ -186,8 +186,8 @@ async def _upsert_team(
         normalized_name=normalized,
     )
     stmt = ins.on_conflict_do_update(
-        index_elements=["normalized_name"],
-        set_={"display_name": ins.excluded.display_name, "club_id": ins.excluded.club_id},
+        index_elements=["club_id", "normalized_name"],
+        set_={"display_name": ins.excluded.display_name},
     ).returning(Team.id)
     result = await session.execute(stmt)
     return int(result.scalar_one())
@@ -204,11 +204,8 @@ async def _upsert_player(session: AsyncSession, fixture: FixturePlayer) -> int:
         normalized_name=normalized,
     )
     stmt = ins.on_conflict_do_update(
-        index_elements=["license_id"],
-        set_={
-            "display_name": ins.excluded.display_name,
-            "normalized_name": ins.excluded.normalized_name,
-        },
+        index_elements=["license_id", "dorsal_default", "normalized_name"],
+        set_={"display_name": ins.excluded.display_name},
     ).returning(Player.id)
     result = await session.execute(stmt)
     return int(result.scalar_one())
