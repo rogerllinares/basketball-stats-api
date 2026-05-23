@@ -35,7 +35,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from unicodedata import combining, normalize
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -142,10 +142,19 @@ async def _upsert_competition(
         season_id=season_id,
         phase=CompetitionPhase.FASE_PREVIA,
     )
-    # Target the named index by string: the index uses COALESCE expressions
-    # (ADR-0006), so SQLAlchemy cannot match it via plain `index_elements`.
+    # Match the COALESCE expression index from migration 0004 (ADR-0006):
+    # `ON CONFLICT ON CONSTRAINT name` only targets pg_constraint entries,
+    # and a plain CREATE UNIQUE INDEX does NOT add one, so we describe the
+    # index by its expression list instead.
     stmt = ins.on_conflict_do_update(
-        constraint="uq_competitions_natural_key",
+        index_elements=[
+            "category",
+            "gender",
+            text("COALESCE(territory, '')"),
+            text("COALESCE(group_no, 0)"),
+            "season_id",
+            "phase",
+        ],
         set_={"phase": ins.excluded.phase},
     ).returning(Competition.id)
     result = await session.execute(stmt)
