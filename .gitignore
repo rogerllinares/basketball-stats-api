@@ -71,3 +71,6 @@ scripts/neon_probe.py
 # OS
 *.bak
 *.tmp
+
+# Phase 2.5: raw basquethero scrape cache (committed JSON fixtures live in data/seed/basquethero/)
+data/raw/

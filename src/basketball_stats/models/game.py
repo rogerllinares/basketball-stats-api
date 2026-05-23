@@ -10,7 +10,7 @@ all 10 score columns at once.
 
 from datetime import date
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from basketball_stats.models.base import Base
@@ -18,6 +18,13 @@ from basketball_stats.models.base import Base
 
 class Game(Base):
     __tablename__ = "games"
+    __table_args__ = (
+        UniqueConstraint(
+            "competition_id",
+            "matchday_no",
+            name="uq_games_competition_matchday",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     competition_id: Mapped[int] = mapped_column(ForeignKey("competitions.id"), nullable=False)

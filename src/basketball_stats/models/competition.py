@@ -8,7 +8,7 @@ naturally partition by competition_id without further filters.
 
 from enum import StrEnum
 
-from sqlalchemy import Enum, ForeignKey, String, UniqueConstraint
+from sqlalchemy import Enum, ForeignKey, Index, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from basketball_stats.models.base import Base
@@ -25,22 +25,28 @@ class CompetitionPhase(StrEnum):
 class Competition(Base):
     __tablename__ = "competitions"
     __table_args__ = (
-        UniqueConstraint(
+        # COALESCE-wrapped unique index: territory/group_no are legitimately
+        # NULL for nation-level slugs (super-copa, cc) — see ADR-0006.
+        # PostgreSQL treats NULL != NULL in plain UniqueConstraint, so two
+        # NULL rows would dedupe-bypass. COALESCE inside the index expression
+        # collapses NULL to a sentinel so uniqueness holds for those rows too.
+        Index(
+            "uq_competitions_natural_key",
             "category",
             "gender",
-            "territory",
-            "group_no",
+            text("COALESCE(territory, '')"),
+            text("COALESCE(group_no, 0)"),
             "season_id",
             "phase",
-            name="uq_competitions_natural_key",
+            unique=True,
         ),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     category: Mapped[str] = mapped_column(String(64), nullable=False)
     gender: Mapped[str] = mapped_column(String(16), nullable=False)
-    territory: Mapped[str] = mapped_column(String(64), nullable=False)
-    group_no: Mapped[int] = mapped_column(nullable=False)
+    territory: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    group_no: Mapped[int | None] = mapped_column(nullable=True)
     season_id: Mapped[int] = mapped_column(ForeignKey("seasons.id"), nullable=False)
     phase: Mapped[CompetitionPhase] = mapped_column(
         Enum(
