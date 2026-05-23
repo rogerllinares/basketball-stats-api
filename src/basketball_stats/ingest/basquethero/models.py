@@ -26,9 +26,28 @@ Design notes:
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, HttpUrl
+from pydantic import BaseModel, BeforeValidator, ConfigDict, HttpUrl
+
+
+def _coerce_iso_datetime(v: object) -> object:
+    # strict=True forbids str→datetime in dict-mode; tests round-trip through
+    # `model_validate(dict)` after mutating JSON, so accept ISO strings here.
+    if isinstance(v, str):
+        return datetime.fromisoformat(v.replace("Z", "+00:00"))
+    return v
+
+
+def _coerce_iso_date(v: object) -> object:
+    if isinstance(v, str):
+        return date.fromisoformat(v)
+    return v
+
+
+IsoDatetime = Annotated[datetime, BeforeValidator(_coerce_iso_datetime)]
+IsoDate = Annotated[date, BeforeValidator(_coerce_iso_date)]
+
 
 Position = Literal["PG", "SG", "SF", "PF", "C"]
 """5 standard basketball positions. None is also valid (amateur leagues skip)."""
@@ -40,7 +59,7 @@ class FixtureMetadata(BaseModel):
     fixture_version: str
     """Semver-style version of the fixture schema itself, not of the data."""
 
-    scraped_at: datetime
+    scraped_at: IsoDatetime
     source_url: HttpUrl
     source_site: Literal["basquethero.cat"]
 
@@ -117,7 +136,7 @@ class FixtureGame(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
 
     basquethero_game_id: int
-    date: date
+    date: IsoDate
     home_team_id: int
     """basquethero_team_id of the home team."""
 

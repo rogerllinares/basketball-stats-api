@@ -12,7 +12,10 @@ from basketball_stats.models.base import Base
 
 class Season(Base):
     __tablename__ = "seasons"
-    __table_args__ = (UniqueConstraint("label", name="uq_seasons_label"),)
+    __table_args__ = (
+        UniqueConstraint("label", name="uq_seasons_label"),
+        UniqueConstraint("start_year", name="uq_seasons_start_year"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     start_year: Mapped[int] = mapped_column(nullable=False)
