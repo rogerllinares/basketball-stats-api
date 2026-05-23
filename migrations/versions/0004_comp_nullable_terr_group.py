@@ -26,7 +26,7 @@ from __future__ import annotations
 import sqlalchemy as sa
 from alembic import op
 
-revision = "0004_competitions_nullable_territory_group"
+revision = "0004_comp_nullable_terr_group"
 down_revision = "0003_seasons_unique_start_year"
 branch_labels = None
 depends_on = None
