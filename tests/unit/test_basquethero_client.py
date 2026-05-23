@@ -48,9 +48,10 @@ def test_fetch_includes_user_agent_header() -> None:
 def test_fetch_raises_immediately_on_4xx() -> None:
     client = BasqueteroClient(rate_limit_seconds=0.0, jitter_range=(0.0, 0.0), max_retries=3)
     http_err = HTTPError("https://x", 404, "Not Found", hdrs=None, fp=BytesIO(b""))  # type: ignore[arg-type]
-    with patch("urllib.request.urlopen", side_effect=http_err), pytest.raises(
-        BasqueteroFetchError
-    ) as exc_info:
+    with (
+        patch("urllib.request.urlopen", side_effect=http_err),
+        pytest.raises(BasqueteroFetchError) as exc_info,
+    ):
         client.fetch("/missing")
     assert exc_info.value.status == 404
 

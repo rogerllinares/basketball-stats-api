@@ -39,8 +39,10 @@ def _build_parser() -> argparse.ArgumentParser:
     p_fetch.add_argument("--out", type=Path, help="Output file (default: stdout binary).")
     p_fetch.add_argument("--base-url", default="https://www.basquethero.cat")
 
-    for name, help_ in (("parse", "Parse a raw-dir into fixture JSON."),
-                       ("scrape", "Fetch + parse end-to-end for one competition slug.")):
+    for name, help_ in (
+        ("parse", "Parse a raw-dir into fixture JSON."),
+        ("scrape", "Fetch + parse end-to-end for one competition slug."),
+    ):
         p = sub.add_parser(name, help=help_)
         p.add_argument("--slug", required=True)
         p.add_argument("--season", required=True, help='e.g. "2025-26"')
