@@ -142,8 +142,10 @@ async def _upsert_competition(
         season_id=season_id,
         phase=CompetitionPhase.FASE_PREVIA,
     )
+    # Target the named index by string: the index uses COALESCE expressions
+    # (ADR-0006), so SQLAlchemy cannot match it via plain `index_elements`.
     stmt = ins.on_conflict_do_update(
-        index_elements=["category", "gender", "territory", "group_no", "season_id", "phase"],
+        constraint="uq_competitions_natural_key",
         set_={"phase": ins.excluded.phase},
     ).returning(Competition.id)
     result = await session.execute(stmt)
