@@ -39,6 +39,10 @@ curl http://localhost:8000/healthz
 open http://localhost:8000/docs
 ```
 
+### Dependencies
+
+Deps are pinned in `pyproject.toml` and locked in `uv.lock`; CI runs `uv sync --locked`, so the lockfile must always match. Dependabot only edits `pyproject.toml`, so the [`dependabot-uv-lock`](.github/workflows/dependabot-uv-lock.yml) workflow regenerates `uv.lock` on `dependabot/pip/*` PRs and pushes it back automatically — no manual `uv lock` step needed. The workflow uses privilege separation (`uv lock` runs with a read-only token; only a separate git-only job holds write), so a malicious dependency build backend can never reach the write token. Because the lockfile commit is pushed with the default `GITHUB_TOKEN`, GitHub does not auto-run CI on the new commit (loop-prevention by design), and "Re-run jobs" only replays the original SHA — so to validate the lockfile commit, close+reopen the PR (re-fires `pull_request` on the new HEAD) or push any follow-up. A GitHub App token would make this fully hands-off, but it's overkill for this fix. To bump a dep yourself: edit `pyproject.toml`, run `uv lock`, and commit both files.
+
 ## Deploy
 
 Manual deploy walkthrough (Phase 1): see [`docs/setup/render-neon.md`](docs/setup/render-neon.md). IaC at [`render.yaml`](render.yaml). Tag-driven automation lands in Phase 4 (`INFRA-04`).
