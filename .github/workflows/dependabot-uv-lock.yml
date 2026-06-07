@@ -1,0 +1,148 @@
+name: dependabot-uv-lock
+
+# Dependabot only edits pyproject.toml, never uv.lock — so every dependabot pip
+# PR fails CI on `uv sync --locked` (lock mismatch) until the lockfile is
+# regenerated. This workflow runs on dependabot pip PRs, regenerates uv.lock,
+# and pushes it back to the PR branch so CI goes green without manual
+# intervention. Resolves #7.
+#
+# WHY pull_request_target (not pull_request):
+#   GitHub treats Dependabot like a fork — on a plain `pull_request` event the
+#   GITHUB_TOKEN is READ-ONLY even with `permissions: contents:write`, so the
+#   `git push` back to the branch fails. `pull_request_target` runs in the BASE
+#   trust context and gets a read-write token, which is what lets us push.
+#
+# SECURITY — privilege separation (two jobs):
+#   pull_request_target exposes a write token + secrets to the run. The risk is
+#   running attacker-controlled code with that token. In a dependency bump the
+#   attacker-controlled code is not just PR-authored files but the bumped
+#   PACKAGE itself: `uv lock` can build sdists / run PEP 517 backends. So:
+#     • Job `lock`  runs `uv lock` with `permissions: contents:read` ONLY and
+#       NO secrets that matter — even if a malicious sdist executes, there is no
+#       write token to steal. It uploads uv.lock as an artifact.
+#     • Job `push` has `contents:write`, runs ZERO dependency/project code —
+#       only git + the downloaded artifact — and pushes the lockfile back.
+#   This way the privileged step never executes untrusted code, and the
+#   untrusted step never holds privilege.
+#
+#   RESIDUAL RISK (irreducible & accepted): auto-regenerating a lockfile means
+#   committing machine-generated content derived from the bumped dependency, so
+#   in principle a malicious build backend could shape uv.lock. This is bounded
+#   the same way every dependency bump is: the lockfile only ever lands on the
+#   dependabot PR branch (never master), and it must still pass `ci.yml`
+#   (`uv sync --locked`, ruff, mypy, pytest) and human PR review before merge —
+#   the same gate that already guards any dependency change. We accept this for
+#   a P3 portfolio repo; a stricter posture would vendor/mirror the index.
+
+on:
+  pull_request_target:
+    branches: [master, main]
+    paths:
+      - "pyproject.toml"
+
+# No workflow-level write — each job declares the minimum it needs.
+permissions:
+  contents: read
+
+concurrency:
+  # Serialize per-branch so two runs never push competing lockfiles.
+  group: dependabot-uv-lock-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  lock:
+    name: regenerate uv.lock (unprivileged)
+    runs-on: ubuntu-latest
+    # Gate strictly to dependabot pip branches; other ecosystems never touch
+    # pyproject.toml. Keeps this path off any non-dependabot PR entirely.
+    if: >-
+      github.actor == 'dependabot[bot]' &&
+      startsWith(github.head_ref, 'dependabot/pip/')
+    # Read-only: a malicious build backend invoked by `uv lock` has no write
+    # token to exfiltrate.
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+    steps:
+      - name: Checkout dependabot branch (head)
+        uses: actions/checkout@v6
+        with:
+          # pull_request_target defaults to BASE; check out the PR HEAD so
+          # `uv lock` sees the bumped pyproject.toml.
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          persist-credentials: false
+
+      # Pinned to the same SHA as ci.yml (v8.1.0) — single source of truth.
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b  # v8.1.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Regenerate uv.lock
+        # No --locked: we WANT uv to update the lockfile to match pyproject.toml.
+        run: uv lock
+
+      - name: Detect change
+        id: diff
+        run: |
+          if git diff --quiet -- uv.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "uv.lock already in sync — nothing to push."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload lockfile artifact
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: uv-lock
+          path: uv.lock
+          retention-days: 1
+
+  push:
+    name: commit + push uv.lock (privileged, no dep code)
+    needs: lock
+    if: needs.lock.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    # Only this job holds the write token, and it runs no dependency/project
+    # code — just git plus the artifact produced by the unprivileged job.
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout dependabot branch (head, writable)
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download regenerated lockfile
+        uses: actions/download-artifact@v4
+        with:
+          name: uv-lock
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet -- uv.lock; then
+            echo "uv.lock unchanged after download — nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add uv.lock
+          git commit -m "chore(deps): regenerate uv.lock"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          # KNOWN LIMITATION (by design, GitHub loop-prevention): commits pushed
+          # with the default GITHUB_TOKEN do NOT spawn new workflow runs, so the
+          # PR's `ci.yml` does not auto-run on this new lockfile SHA. NOTE that
+          # GitHub's "Re-run jobs" replays the ORIGINAL commit's checks, not the
+          # new HEAD — so it does NOT validate the lockfile commit. The reliable
+          # token-free recovery is to close+reopen the PR (re-fires the
+          # `pull_request` event on the new HEAD) or push any follow-up commit.
+          # Fully hands-off re-run needs a GitHub App installation token instead
+          # of GITHUB_TOKEN (adds a managed secret + slightly more attack
+          # surface) — deliberately avoided for this P3 portfolio fix.
