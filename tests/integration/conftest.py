@@ -14,6 +14,7 @@ from collections.abc import AsyncIterator, Iterator
 
 import pytest
 import pytest_asyncio
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -21,6 +22,22 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from testcontainers.postgres import PostgresContainer
+
+# Tables truncated by ``clean_db_session`` for tests that need fresh state.
+# CASCADE handles FK dependencies; RESTART IDENTITY zeroes the sequences so
+# explicit-id seeds in earlier tests (e.g. ``seed.minimal`` writes ``id=1``
+# directly without bumping ``competitions_id_seq``) don't poison sequence-
+# based inserts here.
+_CLEAN_TABLES = (
+    "box_scores",
+    "rosters",
+    "games",
+    "players",
+    "teams",
+    "clubs",
+    "competitions",
+    "seasons",
+)
 
 
 @pytest.fixture(scope="session")
@@ -77,6 +94,21 @@ async def db_session(engine: AsyncEngine) -> AsyncIterator[AsyncSession]:
     factory = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
     async with factory() as session:
         yield session
+
+
+@pytest_asyncio.fixture
+async def clean_db_session(db_session: AsyncSession) -> AsyncIterator[AsyncSession]:
+    """Truncate all P2 tables + reset sequences before yielding.
+
+    Used by the basquethero loader tests, which exercise sequence-driven
+    INSERTs and would collide on ``*_pkey`` when a prior test left rows
+    with explicit ids (see ``seed.minimal`` writing ``id=1`` directly).
+    """
+    await db_session.execute(
+        text(f"TRUNCATE TABLE {', '.join(_CLEAN_TABLES)} RESTART IDENTITY CASCADE")
+    )
+    await db_session.commit()
+    yield db_session
 
 
 @pytest_asyncio.fixture

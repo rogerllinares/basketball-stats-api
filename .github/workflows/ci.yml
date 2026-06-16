@@ -21,6 +21,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # Phase 2.5 — Enforce offline-only ingest separation (D2.5-10, ADR-0005).
+      # Fast-fail BEFORE deps install: catches the violation in seconds.
+      - name: Enforce offline-only ingest separation (no-live-ingest)
+        run: |
+          if grep -rn "from basketball_stats.ingest" src/basketball_stats/ --exclude-dir=ingest; then
+            echo "::error::Production code imports from offline-only ingest package — violates LOCKED no-live-ingest (ADR-0005)"
+            exit 1
+          fi
+          echo "Import-ban verified: no production code touches basketball_stats.ingest.*"
+
       # RESEARCH §3.3 — setup-uv pinned to v8.1.0 by SHA.
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b  # v8.1.0

@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "fixture_version": "1.0",
+    "scraped_at": "2026-05-22T14:00:00Z",
+    "source_url": "https://www.basquethero.cat/liga/sample-comp/calendario",
+    "source_site": "basquethero.cat"
+  },
+  "competition": {
+    "slug": "sample-comp",
+    "season": "2025-26",
+    "name": "Sample Competition (CI fixture)",
+    "gender": "M",
+    "category": "test"
+  },
+  "teams": [
+    {
+      "basquethero_team_id": 98101,
+      "club_slug": "sample-home",
+      "display_name": "Sample Home FC"
+    },
+    {
+      "basquethero_team_id": 98102,
+      "club_slug": "sample-away",
+      "display_name": "Sample Away CB"
+    }
+  ],
+  "players": [
+    {"license_id": 98001, "first_name": "Aleix",   "last_name": "Test-H1", "position": "PG"},
+    {"license_id": 98002, "first_name": "Bernat",  "last_name": "Test-H2", "position": "SG"},
+    {"license_id": 98003, "first_name": "Cesc",    "last_name": "Test-H3", "position": "SF"},
+    {"license_id": 98004, "first_name": "Dídac",   "last_name": "Test-H4", "position": "PF"},
+    {"license_id": 98005, "first_name": "Eduard",  "last_name": "Test-H5", "position": "C"},
+    {"license_id": 98006, "first_name": "Ferran",  "last_name": "Test-H6", "position": null},
+    {"license_id": 98007, "first_name": "Guillem", "last_name": "Test-A1", "position": "PG"},
+    {"license_id": 98008, "first_name": "Hèctor",  "last_name": "Test-A2", "position": "SG"},
+    {"license_id": 98009, "first_name": "Iván",    "last_name": "Test-A3", "position": "SF"},
+    {"license_id": 98010, "first_name": "Jordi",   "last_name": "Test-A4", "position": "PF"},
+    {"license_id": 98011, "first_name": "Kevin",   "last_name": "Test-A5", "position": "C"},
+    {"license_id": 98012, "first_name": "Lluís",   "last_name": "Test-A6", "position": null}
+  ],
+  "games": [
+    {
+      "basquethero_game_id": 98501,
+      "date": "2025-10-04",
+      "home_team_id": 98101,
+      "away_team_id": 98102,
+      "q1_home": 18, "q1_away": 14,
+      "q2_home": 22, "q2_away": 19,
+      "q3_home": 15, "q3_away": 21,
+      "q4_home": 23, "q4_away": 20,
+      "box_scores": [
+        {"player_license_id": 98001, "minutes": 28, "points": 14, "fg2m": 4, "fg2a": 7, "fg3m": 2, "fg3a": 4, "ftm": 0, "fta": 0, "reb_of": 1, "reb_def": 3, "ast": 6, "rec": 2, "tap": 0, "fouls_drawn": 1, "per": 2, "fc": 1, "blocks_received": 0},
+        {"player_license_id": 98002, "minutes": 31, "points": 18, "fg2m": 3, "fg2a": 6, "fg3m": 4, "fg3a": 7, "ftm": 0, "fta": 0, "reb_of": 0, "reb_def": 4, "ast": 3, "rec": 1, "tap": 0, "fouls_drawn": 2, "per": 3, "fc": 1, "blocks_received": 1},
+        {"player_license_id": 98003, "minutes": 26, "points": 11, "fg2m": 4, "fg2a": 9, "fg3m": 1, "fg3a": 2, "ftm": 0, "fta": 0, "reb_of": 2, "reb_def": 5, "ast": 2, "rec": 1, "tap": 1, "fouls_drawn": 1, "per": 1, "fc": 0, "blocks_received": 0},
+        {"player_license_id": 98004, "minutes": 24, "points": 16, "fg2m": 6, "fg2a": 10, "fg3m": 0, "fg3a": 1, "ftm": 4, "fta": 6, "reb_of": 3, "reb_def": 6, "ast": 1, "rec": 0, "tap": 2, "fouls_drawn": 4, "per": 3, "fc": 2, "blocks_received": 0},
+        {"player_license_id": 98005, "minutes": 22, "points": 13, "fg2m": 5, "fg2a": 8, "fg3m": 0, "fg3a": 0, "ftm": 3, "fta": 4, "reb_of": 4, "reb_def": 8, "ast": 0, "rec": 1, "tap": 3, "fouls_drawn": 3, "per": 4, "fc": 1, "blocks_received": 0},
+        {"player_license_id": 98006, "minutes": 9,  "points": 6,  "fg2m": 2, "fg2a": 4, "fg3m": 0, "fg3a": 2, "ftm": 2, "fta": 2, "reb_of": 1, "reb_def": 2, "ast": 1, "rec": 0, "tap": 0, "fouls_drawn": 0, "per": 1, "fc": 0, "blocks_received": 0},
+        {"player_license_id": 98007, "minutes": 30, "points": 12, "fg2m": 5, "fg2a": 11, "fg3m": 0, "fg3a": 3, "ftm": 2, "fta": 3, "reb_of": 0, "reb_def": 3, "ast": 8, "rec": 3, "tap": 0, "fouls_drawn": 2, "per": 2, "fc": 1, "blocks_received": 0},
+        {"player_license_id": 98008, "minutes": 27, "points": 19, "fg2m": 2, "fg2a": 5, "fg3m": 5, "fg3a": 9, "ftm": 0, "fta": 0, "reb_of": 1, "reb_def": 2, "ast": 2, "rec": 2, "tap": 0, "fouls_drawn": 1, "per": 2, "fc": 0, "blocks_received": 2},
+        {"player_license_id": 98009, "minutes": 25, "points": 9,  "fg2m": 3, "fg2a": 6, "fg3m": 1, "fg3a": 3, "ftm": 0, "fta": 0, "reb_of": 2, "reb_def": 4, "ast": 4, "rec": 1, "tap": 1, "fouls_drawn": 1, "per": 3, "fc": 1, "blocks_received": 0},
+        {"player_license_id": 98010, "minutes": 23, "points": 14, "fg2m": 5, "fg2a": 9, "fg3m": 0, "fg3a": 1, "ftm": 4, "fta": 6, "reb_of": 3, "reb_def": 5, "ast": 0, "rec": 0, "tap": 1, "fouls_drawn": 3, "per": 4, "fc": 2, "blocks_received": 0},
+        {"player_license_id": 98011, "minutes": 20, "points": 11, "fg2m": 4, "fg2a": 7, "fg3m": 0, "fg3a": 0, "ftm": 3, "fta": 4, "reb_of": 5, "reb_def": 9, "ast": 1, "rec": 1, "tap": 4, "fouls_drawn": 2, "per": 4, "fc": 1, "blocks_received": 0},
+        {"player_license_id": 98012, "minutes": 5,  "points": 0,  "fg2m": 0, "fg2a": 2, "fg3m": 0, "fg3a": 1, "ftm": 0, "fta": 0, "reb_of": 0, "reb_def": 1, "ast": 0, "rec": 0, "tap": 0, "fouls_drawn": 0, "per": 0, "fc": 0, "blocks_received": 1}
+      ]
+    }
+  ]
+}
